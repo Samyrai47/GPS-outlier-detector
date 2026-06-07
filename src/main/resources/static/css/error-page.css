@@ -1,0 +1,42 @@
+.error-section {
+    display: flex;
+    min-height: 99vh;
+    justify-content: center;
+    align-items: center;
+    /*border: solid yellow;*/
+}
+
+.error-card {
+    width: min(800px, 90vw);
+    padding: 24px;
+    background: #56aec4;
+    /*border: solid rebeccapurple;*/
+    border-radius: 8px;
+    font-size: 20px;
+}
+
+.status {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.error {
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.message {
+    padding: 12px;
+    white-space: pre-wrap;
+}
+
+a {
+    color: #e1f0f0;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.logo {
+    position: absolute;
+}

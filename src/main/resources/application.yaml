@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: outlierdetector
+
+app:
+  python:
+    executable: ${APP_PYTHON_EXECUTABLE:python}
+    script-path: ${APP_PYTHON_SCRIPT_PATH:python/detector.py}
+  analysis:
+    workdir: ${APP_ANALYSIS_WORKDIR:workdir}

@@ -1,0 +1,6 @@
+pandas==2.2.2
+numpy
+shapely
+geopandas
+movingpandas
+scikit-learn>=1.3

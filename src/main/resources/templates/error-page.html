@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка</title>
+    <link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+    <link rel="stylesheet" href="../static/css/general.css" th:href="@{/css/general.css}">
+    <link rel="stylesheet" href="../static/css/error-page.css" th:href="@{/css/error-page.css}">
+</head>
+<body>
+    <p class="logo">Траектория</p>
+
+    <section class="error-section">
+        <div class="error-card">
+            <div class="status" th:text="${status}">400</div>
+            <div class="error" th:text="${error}">Bad Request</div>
+
+            <h3>Описание ошибки</h3>
+            <div class="message" th:text="${message}">
+                Сообщение об ошибке
+            </div>
+
+            <a href="/analysis/upload">Вернуться к загрузке файла</a>
+        </div>
+    </section>
+
+</body>
+</html>

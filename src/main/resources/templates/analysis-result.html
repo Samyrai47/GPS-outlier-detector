@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Результат анализа</title>
+
+    <link
+            rel="stylesheet"
+            href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+    <link rel="stylesheet" href="../static/css/general.css" th:href="@{/css/general.css}">
+    <link rel="stylesheet" href="../static/css/analysis.css" th:href="@{/css/analysis.css}">
+</head>
+<body>
+    <p class="logo">Траектория</p>
+    <section class="analysis-section">
+
+        <h1>Результат анализа</h1>
+
+        <div class="summary">
+            <p th:text="${message}"></p>
+
+            <p>
+                Результат PKL:
+                <a th:href="${pklDownloadUrl}">Скачать размеченный файл</a>
+            </p>
+
+            <a href="/analysis/upload">Загрузить новый файл</a>
+        </div>
+
+        <h2>Карта</h2>
+        <div id="map">
+            <button class="fullscreen-button" type="button" aria-label="Развернуть карту">
+                ⛶
+            </button>
+
+            <div class="legend">
+                <div class="legend-element">
+                    <p><span class="lightblue"></span> - траектория</p>
+                </div>
+
+                <div class="legend-element">
+                    <p><span class="dot blue"></span> - корректная точка</p>
+                </div>
+
+                <div class="legend-element">
+                    <p><span class="dot red"></span> - выброс</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script
+            src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+    <script th:inline="javascript">
+        const geojsonUrl = /*[[${geojsonUrl}]]*/ "";
+    </script>
+
+    <script>
+        let map = null;
+
+        async function init() {
+            const response = await fetch(geojsonUrl);
+
+            if (!response.ok) {
+                document.getElementById("json-preview").textContent =
+                    "Не удалось загрузить GeoJSON: " + response.status;
+                return;
+            }
+
+            const geojson = await response.json();
+
+            drawMap(geojson);
+            initFullscreenButton();
+        }
+
+        function isOutlier(feature) {
+            const value = feature.properties?.flg;
+            return value === true || value === "true" || value === "True";
+        }
+
+        function drawMap(geojson) {
+            map = L.map("map").setView([55.75, 37.61], 10);
+
+            L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap contributors"
+            }).addTo(map);
+
+            const features = geojson.features || [];
+
+            const latLngs = features
+                .filter(f => f.geometry && f.geometry.type === "Point")
+                .map(f => {
+                    const coords = f.geometry.coordinates;
+                    const lon = coords[0];
+                    const lat = coords[1];
+                    return [lat, lon];
+                });
+
+            if (latLngs.length === 0) {
+                console.warn("Нет точек для отрисовки");
+                return;
+            }
+
+            const route = L.polyline(latLngs, {
+                weight: 3,
+                opacity: 0.8
+            }).addTo(map);
+
+            features.forEach(feature => {
+                if (!feature.geometry || feature.geometry.type !== "Point") {
+                    return;
+                }
+
+                const [lon, lat] = feature.geometry.coordinates;
+                const props = feature.properties || {};
+                const outlier = isOutlier(feature);
+
+                const marker = L.circleMarker([lat, lon], {
+                    radius: outlier ? 8 : 4,
+                    color: outlier ? "red" : "blue",
+                    fillColor: outlier ? "red" : "blue",
+                    fillOpacity: outlier ? 0.9 : 0.5,
+                    weight: outlier ? 2 : 1
+                }).addTo(map);
+
+                marker.bindPopup(`
+                <b>Point ID:</b> ${props.point_id ?? "-"}<br>
+                <b>Trajectory:</b> ${props.traj_id ?? "-"}<br>
+                <b>Datetime:</b> ${props.dt ?? "-"}<br>
+                <b>Outlier:</b> ${props.flg ?? "-"}<br>
+                <b>Score:</b> ${props.score ?? "-"}
+            `);
+            });
+
+            map.fitBounds(route.getBounds(), {
+                padding: [20, 20]
+            });
+
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 100);
+        }
+
+        function initFullscreenButton() {
+            const mapElement = document.querySelector("#map");
+            const fullscreenButton = document.querySelector(".fullscreen-button");
+
+            fullscreenButton.addEventListener("click", () => {
+                if (!document.fullscreenElement) {
+                    mapElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+
+            document.addEventListener("fullscreenchange", () => {
+                setTimeout(() => {
+                    if (map) {
+                        map.invalidateSize();
+                    }
+                }, 100);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>

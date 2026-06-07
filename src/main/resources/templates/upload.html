@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Траектория</title>
+    <link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+    <link rel="stylesheet" href="../static/css/general.css" th:href="@{/css/general.css}">
+    <link rel="stylesheet" href="../static/css/hero.css" th:href="@{/css/hero.css}">
+</head>
+<body>
+    <header>
+        <p class="logo">Траектория</p>
+
+        <nav class="nav">
+            <span class="nav-indicator"></span>
+
+            <button class="nav-button" data-page="about-page">О сайте</button>
+
+            <button class="nav-button" data-page="upload-page">Обработка</button>
+        </nav>
+    </header>
+
+    <section id="about-page" class="about-page page active">
+        <div class="general-info">
+            <h1>Траектория</h1>
+
+            <p class="lead">
+                Сервис для поиска выбросов в GPS-треках и визуализации результата на карте.
+            </p>
+
+            <section>
+                <h2>Что делает сервис?</h2>
+                <p>
+                    Сервис анализирует GPS-трек и автоматически определяет точки, которые могут быть ошибками
+                    позиционирования: резкие скачки координат, нетипичные отклонения от маршрута и шумовые измерения.
+                </p>
+            </section>
+
+            <section>
+                <h2>Как пользоваться?</h2>
+                <ol>
+                    <li>Загрузите файл с GPS-треком в формате <code>.pkl</code>.</li>
+                    <li>Проверьте наличие колонок <code>dt</code>, <code>lat</code>, <code>lon</code>.</li>
+                    <li>Выберите алгоритм обработки.</li>
+                    <li>Запустите анализ и дождитесь результата.</li>
+                    <li>Посмотрите разметку на карте и скачайте обработанный файл.</li>
+                </ol>
+            </section>
+
+            <section>
+                <h2>Совет</h2>
+                <p>
+                    Если вы не уверены, какой алгоритм выбрать, оставьте <strong>HDBSCAN</strong>.
+                    Это рекомендуемый вариант по умолчанию.
+                </p>
+            </section>
+        </div>
+    </section>
+
+    <section id="upload-page" class="upload-page page">
+        <h1>Загрузка GPS-трека</h1>
+
+        <form method="post" action="/analysis/upload" enctype="multipart/form-data">
+            <div class="form-element">
+                <p class="section-title">1. Файл</p>
+                <label for="file">Выберите .pkl файл:</label>
+                <input id="file" type="file" name="file" accept=".pkl" required>
+            </div>
+
+            <div class="form-element">
+                <p class="section-title">2. Алгоритм</p>
+
+                <div class="radio-group">
+                    <div>
+                        <input type="radio" name="algorithm" id="lof" value="lof" />
+                        <label for="lof">Local Outlier Factor</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" name="algorithm" id="iso" value="iso" />
+                        <label for="iso">Isolation Forest</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" name="algorithm" id="hdbscan" value="hdbscan" checked />
+                        <label for="hdbscan">HDBSCAN</label>
+                    </div>
+                </div>
+
+                <p class="description">Различные алгоритмы могут выдавать разные результаты фильтрации. По умолчанию рекомендуем использовать HDBSCAN.</p>
+            </div>
+
+            <div class="form-element">
+                <p class="section-title">3. Дополнительные настройки</p>
+
+                <label>
+                    <input type="checkbox" name="window" value="true" checked>
+                    Использовать оконные признаки
+                </label>
+                <p class="description">Использовать скользящее окно для создания дополнительных признаков.
+                    Повышает точность нахождения выбросов, однако увеличивает время работы алгоритма.
+                </p>
+            </div>
+
+            <button class="submit" type="submit">Запустить анализ</button>
+        </form>
+
+        <p style="color: red;" th:if="${error}" th:text="${error}"></p>
+    </section>
+
+    <script>
+        const buttons = document.querySelectorAll(".nav-button");
+        const pages = document.querySelectorAll(".page");
+        const indicator = document.querySelector(".nav-indicator");
+        const nav = document.querySelector(".nav");
+
+        function moveIndicator(button) {
+            const navRect = nav.getBoundingClientRect();
+            const buttonRect = button.getBoundingClientRect();
+
+            const x = buttonRect.left - navRect.left;
+
+            indicator.style.width = `${buttonRect.width}px`;
+            indicator.style.transform = `translateX(${x}px)`;
+        }
+
+        buttons.forEach(button => {
+            button.addEventListener("click", () => {
+                const pageId = button.dataset.page;
+
+                buttons.forEach(btn => btn.classList.remove("active"));
+                pages.forEach(page => page.classList.remove("active"));
+
+                button.classList.add("active");
+
+                if (pageId) {
+                    document.getElementById(pageId).classList.add("active");
+                }
+
+                moveIndicator(button);
+            });
+        });
+
+        window.addEventListener("load", () => {
+            const activeButton = document.querySelector(".nav-button.active");
+            moveIndicator(activeButton);
+        });
+
+        window.addEventListener("resize", () => {
+            const activeButton = document.querySelector(".nav-button.active");
+            moveIndicator(activeButton);
+        });
+    </script>
+</body>
+</html>

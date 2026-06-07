@@ -1,0 +1,92 @@
+@font-face {
+    font-family: "Neris";
+    src: url("../fonts/Neris-Light.otf") format("opentype");
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Neris";
+    src: url("../fonts/Neris-SemiBold.otf") format("opentype");
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Kontanter";
+    src: url("../fonts/Kontanter-Bold.otf") format("opentype");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    font-family: Neris, Arial, sans-serif;
+    color: #e1f0f0;;
+    background: #e1f0f0;
+}
+
+header {
+    display: flex;
+    /*border-style: dotted;*/
+    align-items: center;
+    height: 10vh;
+}
+
+.logo {
+    font-family: "Kontanter", Arial, sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+    margin-left: 2%;
+    margin-right: 2%;
+    cursor: default;
+    color: #252b2c;
+}
+
+nav {
+    position: relative;
+    display: flex;
+    gap: 8px;
+    padding: 4px;
+}
+
+.nav-button {
+    position: relative;
+    z-index: 2;
+
+    padding: 10px 18px;
+    font-family: Neris, Arial, sans-serif;
+    font-size: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #252b2c;
+}
+
+.nav-button:hover {
+    background-color: rgba(86, 174, 196, 0.1);
+    border-radius: 5px;
+}
+
+.nav-indicator {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    height: calc(100% - 8px);
+    border: 2px none #56aec4;
+    border-bottom-style: solid;
+
+    transition:
+            transform 0.25s ease,
+            width 0.25s ease;
+
+    pointer-events: none;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
