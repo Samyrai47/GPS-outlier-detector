@@ -115,3 +115,64 @@ input[type="checkbox"] {
     flex-direction: column;
     gap: 10px;
 }
+
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgb(255 255 255 / 75%);
+    backdrop-filter: blur(3px);
+
+    z-index: 9999;
+}
+
+.loading-overlay.active {
+    display: flex;
+}
+
+.loader-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+
+    padding: 32px 40px;
+    border: 1px solid rgb(0 0 0 / 15%);
+    border-radius: 18px;
+
+    background-color: white;
+    box-shadow: 0 12px 40px rgb(0 0 0 / 12%);
+}
+
+.loader-card p {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #56aec4;
+}
+
+.loader-card span {
+    font-size: 14px;
+    color: rgb(86 174 196 / 60%);
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+
+    border: 4px solid rgb(86 174 196 / 15%);
+    border-top-color: #56aec4;
+    border-radius: 50%;
+
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

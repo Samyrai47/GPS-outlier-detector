@@ -12,25 +12,27 @@ import org.springframework.ui.Model;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(InvalidFileException.class)
-    public String handleUserNotFound(InvalidFileException exception, Model model, HttpServletResponse response) {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
+  @ExceptionHandler(InvalidFileException.class)
+  public String handleUserNotFound(
+      InvalidFileException exception, Model model, HttpServletResponse response) {
+    response.setStatus(HttpStatus.BAD_REQUEST.value());
 
-        model.addAttribute("status", 400);
-        model.addAttribute("error", "Bad Request");
-        model.addAttribute("message", exception.getMessage());
+    model.addAttribute("status", 400);
+    model.addAttribute("error", "Bad Request");
+    model.addAttribute("message", exception.getMessage());
 
-        return "error-page";
-    }
+    return "error-page";
+  }
 
-    @ExceptionHandler(PythonScriptException.class)
-    public String handlePythonScriptException(PythonScriptException exception, Model model, HttpServletResponse response) {
-        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+  @ExceptionHandler(PythonScriptException.class)
+  public String handlePythonScriptException(
+      PythonScriptException exception, Model model, HttpServletResponse response) {
+    response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
-        model.addAttribute("status", 500);
-        model.addAttribute("error", "Internal Server Error");
-        model.addAttribute("message", exception.getMessage());
+    model.addAttribute("status", 500);
+    model.addAttribute("error", "Internal Server Error");
+    model.addAttribute("message", exception.getMessage());
 
-        return "error-page";
-    }
+    return "error-page";
+  }
 }

@@ -3,6 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Траектория</title>
+
+    <meta name="description"
+          content="Веб-приложение для загрузки GPS-треков, анализа маршрутов и поиска аномальных точек с помощью алгоритмов LOF, Isolation Forest и HDBSCAN.">
+
+    <meta name="robots" content="index, follow">
+
+    <link rel="canonical" href="http://outlier-detector.online/">
+
     <link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
     <link rel="stylesheet" href="../static/css/general.css" th:href="@{/css/general.css}">
     <link rel="stylesheet" href="../static/css/hero.css" th:href="@{/css/hero.css}">
@@ -14,7 +22,7 @@
         <nav class="nav">
             <span class="nav-indicator"></span>
 
-            <button class="nav-button" data-page="about-page">О сайте</button>
+            <button class="nav-button active" data-page="about-page">О сайте</button>
 
             <button class="nav-button" data-page="upload-page">Обработка</button>
         </nav>
@@ -60,7 +68,7 @@
     <section id="upload-page" class="upload-page page">
         <h1>Загрузка GPS-трека</h1>
 
-        <form method="post" action="/analysis/upload" enctype="multipart/form-data">
+        <form id="upload-form" method="post" action="/analysis/upload" enctype="multipart/form-data">
             <div class="form-element">
                 <p class="section-title">1. Файл</p>
                 <label for="file">Выберите .pkl файл:</label>
@@ -102,11 +110,19 @@
                 </p>
             </div>
 
-            <button class="submit" type="submit">Запустить анализ</button>
+            <button id="submit-button" class="submit" type="submit">Запустить анализ</button>
         </form>
 
         <p style="color: red;" th:if="${error}" th:text="${error}"></p>
     </section>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader-card">
+            <div class="spinner"></div>
+            <p>Идет анализ GPS-трека...</p>
+            <span>Пожалуйста, не закрывайте страницу</span>
+        </div>
+    </div>
 
     <script>
         const buttons = document.querySelectorAll(".nav-button");
@@ -149,6 +165,20 @@
         window.addEventListener("resize", () => {
             const activeButton = document.querySelector(".nav-button.active");
             moveIndicator(activeButton);
+        });
+
+        const uploadForm = document.getElementById("upload-form");
+        const loadingOverlay = document.getElementById("loading-overlay");
+        const submitButton = document.getElementById("submit-button");
+
+        uploadForm.addEventListener("submit", () => {
+            if (!uploadForm.checkValidity()) {
+                return;
+            }
+
+            loadingOverlay.classList.add("active");
+            submitButton.disabled = true;
+            submitButton.textContent = "Анализ выполняется...";
         });
     </script>
 </body>

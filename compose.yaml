@@ -8,6 +8,7 @@ services:
       APP_PYTHON_EXECUTABLE: /app/venv/bin/python
       APP_PYTHON_SCRIPT_PATH: /app/python/detector.py
       APP_ANALYSIS_WORKDIR: /app/workdir
+      APP_ANALYSIS_TTL_MINUTES: 20
     volumes:
       - app_workdir:/app/workdir
 
