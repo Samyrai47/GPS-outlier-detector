@@ -35,6 +35,14 @@
     font-size: 30px;
 }
 
+.general-info a {
+    color: #e1f0f0;
+}
+
+.general-info a::after {
+    color: #e1f0f0;
+}
+
 .upload-page h1 {
     color: #252b2c;
 }
