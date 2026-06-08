@@ -25,7 +25,7 @@ Docker - развертывание приложения.
 
 ## Техническое устройство сервиса:
 
-После передачи файла через endpoint в [AnalysisController](GPS-outlier-detector/src/main/java/mipt/app/outlierdetector/controller/AnalysisController.java) запрос передается в 
+После передачи файла через endpoint в [AnalysisController](src/main/java/mipt/app/outlierdetector/controller/AnalysisController.java) запрос передается в 
 [PythonScriptService](GPS-outlier-detector/src/main/java/mipt/app/outlierdetector/service/PythonScriptService.java), где происходит запуск скрипта [detector.py](GPS-outlier-detector/python/detector.py) для анализа траектории.
 После завершения работы скрипта получаем geojson и .pkl файл. Первый используется для отрисовки данных на карте, второй можно скачать для дальнейшего использования.  
 
