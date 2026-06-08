@@ -13,7 +13,7 @@
 
 - Java 21 JDK
 - Spring Boot 4.0.6
-- Python 3.12 (библиотеки, использованные для анализа см. в [requirements.txt](GPS-outlier-detector/python/requirements.txt))
+- Python 3.12 (библиотеки, использованные для анализа см. в [requirements.txt](python/requirements.txt))
 - Docker + Docker compose
 - HTML + CSS (+ Thymeleaf)
 - JS
@@ -26,7 +26,7 @@ Docker - развертывание приложения.
 ## Техническое устройство сервиса:
 
 После передачи файла через endpoint в [AnalysisController](src/main/java/mipt/app/outlierdetector/controller/AnalysisController.java) запрос передается в 
-[PythonScriptService](GPS-outlier-detector/src/main/java/mipt/app/outlierdetector/service/PythonScriptService.java), где происходит запуск скрипта [detector.py](GPS-outlier-detector/python/detector.py) для анализа траектории.
+[PythonScriptService](src/main/java/mipt/app/outlierdetector/service/PythonScriptService.java), где происходит запуск скрипта [detector.py](python/detector.py) для анализа траектории.
 После завершения работы скрипта получаем geojson и .pkl файл. Первый используется для отрисовки данных на карте, второй можно скачать для дальнейшего использования.  
 
 Для ознакомления с принципом анализа можно посмотреть [вот этот блокнот](https://colab.research.google.com/drive/1V1NL_SbtViEoKN9RLoA4K83weLIFILtX?usp=sharing).
